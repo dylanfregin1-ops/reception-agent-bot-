@@ -19,14 +19,16 @@ async function generatePersonalEmail(lead, campaignType) {
     .replace(/{companyName}/g, lead.company_name || 'Ihrem Unternehmen')
     .replace(/{industry}/g, lead.industry || 'Ihrer Branche');
 
-  try {
-    const message = await client.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 500,
-      messages: [
-        {
-          role: 'user',
-          content: `Verbessere diese Cold-Email, um sie persönlicher zu machen.
+  // Nur personalisieren wenn Anthropic API verfügbar und funktioniert
+  if (config.api.anthropic.apiKey && !config.api.anthropic.apiKey.includes('YOUR')) {
+    try {
+      const message = await client.messages.create({
+        model: 'claude-opus-4-6',
+        max_tokens: 500,
+        messages: [
+          {
+            role: 'user',
+            content: `Verbessere diese Cold-Email, um sie persönlicher zu machen.
 
 Unternehmen: ${lead.company_name}
 Kontaktperson: ${lead.contact_name}
@@ -35,13 +37,14 @@ Email:
 ${body}
 
 Gib nur die verbesserte Email zurück.`,
-        },
-      ],
-    });
+          },
+        ],
+      });
 
-    body = message.content[0].text;
-  } catch (error) {
-    console.warn('Claude-Personalisierung fehlgeschlagen:', error.message);
+      body = message.content[0].text;
+    } catch (error) {
+      console.warn('Claude-Personalisierung fehlgeschlagen:', error.message);
+    }
   }
 
   return {
