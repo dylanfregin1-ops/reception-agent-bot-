@@ -1,6 +1,7 @@
 const { Anthropic } = require('@anthropic-ai/sdk');
 const templates = require('./templates');
 const config = require('../config');
+const models = require('../models');
 
 const client = new Anthropic({
   apiKey: config.api.anthropic.apiKey,
@@ -23,8 +24,8 @@ async function generatePersonalEmail(lead, campaignType) {
   if (config.api.anthropic.apiKey && !config.api.anthropic.apiKey.includes('YOUR')) {
     try {
       const message = await client.messages.create({
-        model: 'claude-opus-4-6',
-        max_tokens: 500,
+        model: models.claude.fast,
+        max_tokens: models.claude.maxTokens.fast,
         messages: [
           {
             role: 'user',
