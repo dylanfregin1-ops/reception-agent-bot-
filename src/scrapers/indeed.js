@@ -50,10 +50,21 @@ async function scrapeIndeed() {
   const expandedJobs = [];
   const companies = ['Tech Solutions GmbH', 'Hotel & Eventmanagement', 'Zahnarztpraxis Dr. Meyer', 'Consulting & Business Services', 'Privatklinik Westend', 'Corporate Services AG', 'Rechtsanwaltskanzlei Müller', 'Versicherungsbüro Schmidt', 'Immobilienagentur Gold', 'Marketing Agency Pro'];
   const cities = ['Berlin', 'München', 'Hamburg', 'Köln', 'Frankfurt', 'Stuttgart', 'Düsseldorf', 'Dortmund', 'Essen', 'Leipzig'];
+  const firstNames = ['Anna', 'Michael', 'Sarah', 'Thomas', 'Jennifer', 'Daniel', 'Lisa', 'Christian', 'Maria', 'Peter'];
+  const lastNames = ['Schmidt', 'Müller', 'Weber', 'Meyer', 'Wagner', 'Becker', 'Schulz', 'Hoffmann', 'Koch', 'Bauer'];
+  const domains = ['gmail.com', 'outlook.com', 'company.de', 'web.de', 'freenet.de', 'mail.de', 't-online.de'];
 
   for (let i = 0; i < 100; i++) {
     const company = companies[i % companies.length];
     const city = cities[i % cities.length];
+    const firstName = firstNames[i % firstNames.length];
+    const lastName = lastNames[(i + Math.floor(i / 10)) % lastNames.length];
+    const domain = domains[i % domains.length];
+    // Sanitize name for email (no umlauts)
+    const sanitizedFirst = firstName.toLowerCase().replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae');
+    const sanitizedLast = lastName.toLowerCase().replace(/ü/g, 'ue').replace(/ö/g, 'oe').replace(/ä/g, 'ae');
+    const email = `${sanitizedFirst}.${sanitizedLast}${i > 9 ? i : ''}@${domain}`;
+
     expandedJobs.push({
       title: `Receptionist/in - ${city} (${i + 1})`,
       company: company,
@@ -61,6 +72,7 @@ async function scrapeIndeed() {
       description: `Receptionist/in gesucht in ${city}. Wir suchen eine zuverlässige Person für unseren Empfang.`,
       source: 'indeed',
       sourceJobId: `mock${i}`,
+      email: email,
     });
   }
 
