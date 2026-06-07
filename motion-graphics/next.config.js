@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   // Turbopack config for Next.js 16+
   turbopack: {
+    root: __dirname,
     rules: {
       "*.md": {
         loaders: ["raw-loader"],
